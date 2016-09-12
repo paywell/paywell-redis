@@ -73,6 +73,17 @@ const client = redis.createClient([options]);
 
 ```
 
+### `pubsub():{publisher, subscriber}`
+Obtain existing or create new instances of publisher and subscriber redis clients
+
+```js
+const redis = require('paywell-redis')();
+const { publisher, subscriber } = redis.pubsub();
+
+...
+
+```
+
 ## Testing
 * Clone this repository
 

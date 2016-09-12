@@ -76,6 +76,7 @@ exports.createClient = function (options) {
  * @public
  */
 exports.pubsub = function () {
+
   //create publisher if not exists
   if (!exports.publisher) {
     exports.publisher = exports.createClient();
@@ -85,6 +86,9 @@ exports.pubsub = function () {
   if (!exports.subscriber) {
     exports.subscriber = exports.createClient();
   }
+
+  //exports pub/sub clients
+  return { publisher: exports.publisher, subscriber: exports.subscriber };
 };
 
 

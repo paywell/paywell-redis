@@ -95,6 +95,12 @@ describe('redis', function () {
     expect(client).to.exist;
   });
 
+  it('should be able to instantiate pub/sub redis clients', function () {
+    const { publisher, subscriber } = redis.pubsub();
+    expect(publisher).to.exist;
+    expect(subscriber).to.exist;
+  });
+
   it('should be able to connect to redis', function () {
     redis.init();
 
