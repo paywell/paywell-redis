@@ -46,9 +46,9 @@ exports.defaults = _.merge({}, defaults);
  * @since 0.1.0
  * @public
  */
-exports.createClient = function () {
+exports.createClient = function (options) {
 
-  var options = _.merge({}, exports.defaults, exports.options);
+  var options = _.merge({}, exports.defaults, options);
 
   var socket = options.redis.socket;
   var port = !socket ? (options.redis.port || 6379) : null;

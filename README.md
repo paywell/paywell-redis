@@ -37,6 +37,11 @@ redis.clear(options);
 redis.quit();
 ```
 
+## Options
+- `prefix:String` - redis key prefix. default to `paywell`
+- `separator:String` - redis key separator. default to `:`
+- `redis:Object` - [redis](https://github.com/NodeRedis/node_redis#rediscreateclient) connections options.
+
 ## Testing
 * Clone this repository
 
