@@ -105,14 +105,14 @@ const key = redis.key();
 expect(key).to.exist;
 expect(key.split(':')).to.have.length(2);
 
-const ab = redis.key('ab');
-expect(ab).to.be.equal('paywell:ab');
+const key = redis.key('ab');
+expect(key).to.be.equal('paywell:ab');
 
-const users = redis.key(['users', 'ab']);
-expect(users).to.be.equal('paywell:users:ab');
+const key = redis.key(['users', 'ab']);
+expect(key).to.be.equal('paywell:users:ab');
 
-const vegetables = redis.key('users', 'likes', 'vegetables');
-expect(vegetables).to.be.equal('paywell:users:likes:vegetables');
+const key = redis.key('users', 'likes', 'vegetables');
+expect(key).to.be.equal('paywell:users:likes:vegetables');
 
 ...
 
