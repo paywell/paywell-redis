@@ -98,17 +98,20 @@ exports.pubsub = function () {
  * @name init
  * @description initialize redis client and pubsub
  * @since 0.1.0
- * @private
+ * @public
  */
-exports.init = function () {
+exports.init = exports.client = function () {
 
   //initialize normal client
-  if (!exports.client) {
-    exports.client = exports.createClient();
+  if (!exports._client) {
+    exports._client = exports.createClient();
   }
 
   //initialize publisher and subscriber clients
   exports.pubsub();
+
+  //return a normal redis client
+  return exports._client;
 
 };
 
@@ -126,9 +129,9 @@ exports.info = function (done) {
   //ensure connection
   exports.init();
 
-  exports.client.info(function (error /*, info*/ ) {
+  exports.client().info(function (error /*, info*/ ) {
     // jshint camelcase:false
-    done(error, exports.client.server_info);
+    done(error, exports._client.server_info);
     // jshint camelcase:true
   });
 };
@@ -168,7 +171,7 @@ exports.key = function (...args) {
  * @since 0.1.0
  * @public
  */
-exports.reset = function () {
+exports.reset = exports.quit = function () {
   //clear subscriptions and listeners
   if (exports.subscriber) {
     exports.subscriber.unsubscribe();
@@ -176,8 +179,8 @@ exports.reset = function () {
   }
 
   //quit clients
-  exports.client =
-    exports.client ? exports.client.quit() : null;
+  exports._client =
+    exports._client ? exports._client.quit() : null;
 
   exports.publisher =
     exports.publisher ? exports.publisher.quit() : null;
@@ -186,7 +189,7 @@ exports.reset = function () {
     exports.subscriber ? exports.subscriber.quit() : null;
 
   //reset clients
-  exports.client = null;
+  exports._client = null;
   exports.publisher = null;
   exports.subscriber = null;
 
@@ -222,13 +225,13 @@ exports.clear = function (keys, done) {
   exports.init();
 
   //clear data
-  exports.client.keys(keys, function (error, rows) {
+  exports.client().keys(keys, function (error, rows) {
     //back-off in case there is error
     if (error) {
       done(error);
     } else {
       //initiate multi to run all commands atomically
-      var _client = exports.client.multi();
+      var _client = exports.client().multi();
 
       //queue commands
       _.forEach(rows, function (row) {

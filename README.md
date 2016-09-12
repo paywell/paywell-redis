@@ -23,18 +23,22 @@ $ npm install --save paywell-redis
 const redis = require('paywell-redis')([options]);
 
 //obtain normal redis client
-const client = redis.client;
+const client = redis.client();
 
-//obtain publisher redis client
-const publisher = redis.publisher;
+//obtain pub/sub clients
+const { publisher, subscriber } = redis.pubsub();
 
-//obtain subscriber redis client
-const subscriber = redis.subscriber;
+//clear users data
+redis.clear('users*', function(error, response){
+    ...
+});
 
 //clear all data
-redis.clear(options);
+redis.clear(function(error, response){
+    ...
+});
 
-//quit all clients
+//reset and quit all clients
 redis.quit();
 ```
 
@@ -113,6 +117,17 @@ expect(key).to.be.equal('paywell:users:ab');
 
 const key = redis.key('users', 'likes', 'vegetables');
 expect(key).to.be.equal('paywell:users:likes:vegetables');
+
+...
+
+```
+
+### `reset()`
+Reset current state of redis
+
+```js
+const redis = require('paywell-redis')();
+redis.reset();
 
 ...
 

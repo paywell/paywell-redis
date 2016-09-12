@@ -25,7 +25,7 @@ describe('redis', function () {
     expect(redis.pubsub).to.exist;
     expect(redis.pubsub).to.be.a.function;
 
-    expect(redis.client).to.not.exist;
+    expect(redis._client).to.not.exist;
     expect(redis.publisher).to.not.exist;
     expect(redis.subscriber).to.not.exist;
 
@@ -112,6 +112,11 @@ describe('redis', function () {
     expect(client).to.exist;
   });
 
+  it('should be able to instantiate redis client', function () {
+    const client = redis.client();
+    expect(client).to.exist;
+  });
+
   it('should be able to instantiate pub/sub redis clients', function () {
     const { publisher, subscriber } = redis.pubsub();
     expect(publisher).to.exist;
@@ -121,8 +126,8 @@ describe('redis', function () {
   it('should be able to connect to redis', function () {
     redis.init();
 
-    expect(redis.client).to.exist;
-    expect(redis.client).to.not.be.null;
+    expect(redis._client).to.exist;
+    expect(redis._client).to.not.be.null;
 
     expect(redis.publisher).to.exist;
     expect(redis.publisher).to.not.be.null;
@@ -135,7 +140,7 @@ describe('redis', function () {
   it('should be able to reset it state', function () {
     redis.reset();
 
-    expect(redis.client).to.be.null;
+    expect(redis._client).to.be.null;
     expect(redis.publisher).to.be.null;
     expect(redis.subscriber).to.be.null;
 
