@@ -48,12 +48,12 @@ exports.defaults = _.merge({}, defaults);
  */
 exports.createClient = function (options) {
 
-  var options = _.merge({}, exports.defaults, options);
+  options = _.merge({}, exports.defaults, options);
 
-  var socket = options.redis.socket;
-  var port = !socket ? (options.redis.port || 6379) : null;
-  var host = !socket ? (options.redis.host || '127.0.0.1') : null;
-  var client =
+  const socket = options.redis.socket;
+  const port = !socket ? (options.redis.port || 6379) : null;
+  const host = !socket ? (options.redis.host || '127.0.0.1') : null;
+  const client =
     redis.createClient(socket || port, host, options.redis.options);
 
   if (options.redis.auth) {
