@@ -15,16 +15,16 @@ $ npm install --save paywell-redis
 ## Usage
 
 ```javascript
-const redis = require('paywell-redis')(options);
+const redis = require('paywell-redis')([options]);
 
 //obtain normal client
-const client = redis.client(options);
+const client = redis.client;
 
 //obtain publisher client
-const publisher = redis.publisher(options);
+const publisher = redis.publisher;
 
 //obtain subscriber client
-const subscriber = redis.subscriber(options);
+const subscriber = redis.subscriber;
 
 //clear all data
 redis.clear(options);

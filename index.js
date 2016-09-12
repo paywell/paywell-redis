@@ -1,8 +1,9 @@
 'use strict';
 
 //dependencies
-var path = require('path');
+const path = require('path');
+const redis = require(path.join(__dirname, 'src', 'redis'));
 
 exports = module.exports = function (options) {
-  
+	
 };
