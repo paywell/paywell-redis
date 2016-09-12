@@ -3,7 +3,6 @@
 //dependencies
 var path = require('path');
 var expect = require('chai').expect;
-var faker = require('faker');
 var redis = require(path.join(__dirname, '..', 'src', 'redis'));
 
 describe('redis', function () {
@@ -66,67 +65,6 @@ describe('redis', function () {
     });
 
   });
-
-  describe('hash', function () {
-
-    before(function () {
-      redis.clear();
-    });
-
-    before(function () {
-      redis.init();
-    });
-
-    var _id;
-    var object = faker.helpers.userCard();
-
-    it('should be able to able to save object to redis', function (done) {
-      redis.hset(object, function (error, _object) {
-        _id = _object._id;
-        delete _object._id;
-        expect(_object).to.be.eql(object);
-        done(error, _object);
-      });
-    });
-
-    it('should be able to fetch save object', function (done) {
-      redis.hget(_id, function (error, _object) {
-        delete _object._id;
-        expect(_object).to.be.eql(object);
-        done(error, _object);
-      });
-    });
-
-    it('should be able to fetch multiple objects', function (done) {
-      redis.hmget([_id], function (error, objects) {
-        expect(error).to.not.exist;
-        expect(objects).to.have.have.length(1);
-        done(error, objects);
-      });
-    });
-
-    it('should be able to search saved objects', function (done) {
-      redis.hsearch(object.username, function (error, objects) {
-        expect(error).to.not.exist;
-        expect(objects).to.have.have.length(1);
-
-        var _object = objects[0];
-        delete _object._id;
-        expect(_object).to.be.eql(object);
-        done(error, objects);
-      });
-    });
-
-    after(function (done) {
-      redis.clear(done);
-    });
-
-    after(function () {
-      redis.reset();
-    });
-
-  });
-
 
   after(function (done) {
     redis.clear(done);
