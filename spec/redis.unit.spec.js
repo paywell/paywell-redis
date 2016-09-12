@@ -90,6 +90,11 @@ describe('redis', function () {
 
   });
 
+  it('should be able to create a new instance of redis client', function () {
+    const client = redis.createClient();
+    expect(client).to.exist;
+  });
+
   it('should be able to connect to redis', function () {
     redis.init();
 

@@ -46,7 +46,7 @@ redis.quit();
 To initialize `redis` with custom options use
 
 ```js
-var redis = require('paywell-redis')({
+const redis = require('paywell-redis')({
     prefix:'q',
     separator:'-',
     redis: {
@@ -61,7 +61,17 @@ var redis = require('paywell-redis')({
 
 ## API
 
-### 
+### `createClient([options]):Object`
+Create a new instance of redis client
+
+```js
+const redis = require('paywell-redis')();
+
+const client = redis.createClient([options]);
+
+...
+
+```
 
 ## Testing
 * Clone this repository
