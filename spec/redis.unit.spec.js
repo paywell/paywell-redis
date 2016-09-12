@@ -6,7 +6,7 @@ var expect = require('chai').expect;
 var faker = require('faker');
 var redis = require(path.join(__dirname, '..', 'src', 'redis'));
 
-describe.skip('redis', function () {
+describe('redis', function () {
 
   before(function (done) {
     redis.clear(done);
