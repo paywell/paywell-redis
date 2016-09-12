@@ -61,12 +61,11 @@ const redis = require('paywell-redis')({
 
 ## API
 
-### `createClient([options]):Object`
+### `createClient([options:Object]):Object`
 Create a new instance of redis client
 
 ```js
 const redis = require('paywell-redis')();
-
 const client = redis.createClient([options]);
 
 ...
@@ -81,6 +80,17 @@ const redis = require('paywell-redis')();
 const { publisher, subscriber } = redis.pubsub();
 
 ...
+
+```
+
+### `info(done:Function):Object`
+Obtain informations of the current redis server.
+
+```js
+const redis = require('paywell-redis')();
+redis.info(function(error, info){
+    ...
+});
 
 ```
 
