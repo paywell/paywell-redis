@@ -1,6 +1,10 @@
 paywell-redis
 ===============
 
+[![Build Status](https://travis-ci.org/paywell/paywell-redis.svg?branch=master)](https://travis-ci.org/paywell/paywell-redis)
+[![Dependency Status](https://img.shields.io/david/paywell/paywell-redis.svg?style=flat)](https://david-dm.org/paywell/paywell-redis)
+[![npm version](https://badge.fury.io/js/paywell-redis.svg)](https://badge.fury.io/js/paywell-redis)
+
 redis client factory and utilities
 
 ## Requirements
