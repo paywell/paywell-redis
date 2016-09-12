@@ -90,6 +90,12 @@ describe('redis', function () {
 
   });
 
+  it('should be able to generate a key', function () {
+    const key = redis.key();
+    expect(key).to.exist;
+    expect(key.split(':')).to.have.length(2);
+  });
+
   it('should be able to create redis key', function () {
     const key1 = redis.key('ab');
     expect(key1).to.be.equal('paywell:ab');

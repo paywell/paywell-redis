@@ -15,6 +15,7 @@
 //dependencies
 const redis = require('redis');
 const _ = require('lodash');
+const uuid = require('uuid');
 
 
 //defaults settings
@@ -142,8 +143,15 @@ exports.info = function (done) {
  * @public
  */
 exports.key = function (...args) {
+
   //concatenate key is varargs
   let key = [].concat(...args);
+
+  //ensure key
+  if (key.length === 0) {
+    key = key.concat(uuid.v1());
+  }
+
   key = [exports.defaults.prefix].concat(key);
 
   //join key using separator

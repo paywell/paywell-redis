@@ -100,6 +100,11 @@ Build redis storage key using `prefix` and `separator` options
 ```js
 const redis = require('paywell-redis')();
 
+//generate random key
+const key = redis.key();
+expect(key).to.exist;
+expect(key.split(':')).to.have.length(2);
+
 const ab = redis.key('ab');
 expect(ab).to.be.equal('paywell:ab');
 
