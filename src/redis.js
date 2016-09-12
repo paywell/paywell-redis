@@ -97,7 +97,7 @@ exports.pubsub = function () {
  * @name init
  * @description initialize redis client and pubsub
  * @since 0.1.0
- * @public
+ * @private
  */
 exports.init = function () {
 
@@ -150,21 +150,6 @@ exports.key = function (key) {
   key = key.join(exports.defaults.separator);
 
   return key;
-};
-
-
-/**
- * @function
- * @name indexKey
- * @description prepare collection index key
- * @param  {String} collection valid name of the collection
- * @since 0.1.0
- * @public
- */
-exports.indexKey = function (collection) {
-  collection = [].concat(collection).concat(['search']);
-  var indexKey = exports.key(collection);
-  return indexKey;
 };
 
 
