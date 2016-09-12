@@ -19,7 +19,7 @@ $ npm install --save paywell-redis
 ## Usage
 
 ```javascript
-const redis = require('paywell-redis')([options]);
+const redis = require('paywell-redis')();
 
 //obtain normal redis client
 const client = redis.client;
