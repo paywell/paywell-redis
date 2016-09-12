@@ -17,14 +17,8 @@ const redis = require('redis');
 const _ = require('lodash');
 
 
-/**
- * @name defaults
- * @description default redis client connection options
- * @type {Object}
- * @since 0.1.0
- * @public
- */
-exports.defaults = {
+//defaults settings
+const defaults = {
   prefix: 'paywell',
   separator: ':',
   redis: {
@@ -32,6 +26,16 @@ exports.defaults = {
     host: '127.0.0.1'
   }
 };
+
+
+/**
+ * @name defaults
+ * @description default redis client connection options
+ * @type {Object}
+ * @since 0.1.0
+ * @public
+ */
+exports.defaults = _.merge({}, defaults);
 
 
 /**
@@ -188,6 +192,9 @@ exports.reset = function () {
   exports.client = null;
   exports.publisher = null;
   exports.subscriber = null;
+
+  //reset settings
+  exports.defaults = _.merge({}, defaults);
 };
 
 
