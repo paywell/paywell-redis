@@ -19,7 +19,8 @@ $ npm install --save paywell-redis
 ## Usage
 
 ```javascript
-const redis = require('paywell-redis')();
+//initialize redis with default options
+const redis = require('paywell-redis')([options]);
 
 //obtain normal redis client
 const client = redis.client;
@@ -41,6 +42,26 @@ redis.quit();
 - `prefix:String` - redis key prefix. default to `paywell`
 - `separator:String` - redis key separator. default to `:`
 - `redis:Object` - [redis](https://github.com/NodeRedis/node_redis#rediscreateclient) connections options.
+
+To initialize `redis` with custom options use
+
+```js
+var redis = require('paywell-redis')({
+    prefix:'q',
+    separator:'-',
+    redis: {
+    port: 6379,
+    host: '127.0.0.1'
+  }
+});
+
+...
+
+```
+
+## API
+
+### 
 
 ## Testing
 * Clone this repository
