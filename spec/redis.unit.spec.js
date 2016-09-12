@@ -155,6 +155,46 @@ describe('redis', function () {
   });
 
 
+  describe('clear', function () {
+    beforeEach(function (done) {
+      redis.clear(done);
+    });
+
+    it('should be able to clear all data', function (done) {
+      const key = redis.key();
+      redis.client().set(key, 1, function (error) {
+        if (error) {
+          done(error);
+        } else {
+          redis.clear(function (error, response) {
+            expect(error).to.not.exist;
+            expect(response).to.have.length(1);
+            expect(response).to.contain.members([1]);
+            done(error, response);
+          });
+        }
+      });
+    });
+
+    it('should be able to clear data with given patterns', function (
+      done) {
+      const key = redis.key('users');
+      redis.client().set(key, 1, function (error) {
+        if (error) {
+          done(error);
+        } else {
+          redis.clear('users', function (error, response) {
+            expect(error).to.not.exist;
+            expect(response).to.have.length(1);
+            expect(response).to.contain.members([1]);
+            done(error, response);
+          });
+        }
+      });
+    });
+  });
+
+
   after(function (done) {
     redis.clear(done);
   });

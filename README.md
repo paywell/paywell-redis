@@ -122,6 +122,26 @@ expect(key).to.be.equal('paywell:users:likes:vegetables');
 
 ```
 
+### `clear(pattern:String,[done:Function]):Array[String>`
+clear data using specified pattern. if pattern not provided all data will be deleted
+
+```js
+const redis = require('paywell-redis')();
+
+//clear all data
+redis.clear(function(error, responses){
+    ...
+});
+
+//clear all key 'users*'
+redis.clear('users',function(error, responses){
+    ...
+});
+
+...
+
+```
+
 ### `reset()`
 Reset current state of redis
 

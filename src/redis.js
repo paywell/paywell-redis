@@ -16,6 +16,7 @@
 const redis = require('redis');
 const _ = require('lodash');
 const uuid = require('uuid');
+const noop = function () {};
 
 
 //defaults settings
@@ -202,30 +203,36 @@ exports.reset = exports.quit = function () {
  * @function
  * @name clear
  * @description clear all data saved and their key
- * @param {String|[String]} [keys] key pattern or collection of keys to removed
+ * @param {String} [pattern] pattern of keys to be removed
  * @param {Function} done a callback to invoke on success or failure
  * @since 0.1.0
  * @public
  */
-exports.clear = function (keys, done) {
+exports.clear = function (pattern, done) {
 
   //normalize arguments
-  if (keys && _.isFunction(keys)) {
-    done = keys;
-    keys = undefined;
+  if (pattern && _.isFunction(pattern)) {
+    done = pattern;
+    pattern = undefined;
   }
 
-  //TODO handle collection of keys passed
+  //ensure callback
+  if (!done) {
+    done = noop;
+  }
 
   //prepare clear all key regex
-  keys = _.compact([exports.defaults.prefix, keys]);
-  keys = [keys, '*'].join('');
+  pattern = _.compact([exports.defaults.prefix, pattern]);
+  if (pattern.length > 1) {
+    pattern = pattern.join(exports.defaults.separator);
+  }
+  pattern = [pattern].concat(['*']).join('');
 
   //ensure client
   exports.init();
 
   //clear data
-  exports.client().keys(keys, function (error, rows) {
+  exports.client().keys(pattern, function (error, keys) {
     //back-off in case there is error
     if (error) {
       done(error);
@@ -234,8 +241,8 @@ exports.clear = function (keys, done) {
       var _client = exports.client().multi();
 
       //queue commands
-      _.forEach(rows, function (row) {
-        _client.del(row);
+      _.forEach(keys, function (key) {
+        _client.del(key);
       });
 
       //execute commands
@@ -243,5 +250,3 @@ exports.clear = function (keys, done) {
     }
   });
 };
-
-//TODO implement process shutdown hook
