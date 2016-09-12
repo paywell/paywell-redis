@@ -90,6 +90,17 @@ describe('redis', function () {
 
   });
 
+  it('should be able to create redis key', function () {
+    const key1 = redis.key('ab');
+    expect(key1).to.be.equal('paywell:ab');
+
+    const key2 = redis.key(['users', 'ab']);
+    expect(key2).to.be.equal('paywell:users:ab');
+
+    const key3 = redis.key('users', 'likes', 'vegetables');
+    expect(key3).to.be.equal('paywell:users:likes:vegetables');
+  });
+
   it('should be able to create a new instance of redis client', function () {
     const client = redis.createClient();
     expect(client).to.exist;

@@ -94,6 +94,25 @@ redis.info(function(error, info){
 
 ```
 
+### `key(...args):String`
+Build redis storage key using `prefix` and `separator` options
+
+```js
+const redis = require('paywell-redis')();
+
+const ab = redis.key('ab');
+expect(ab).to.be.equal('paywell:ab');
+
+const users = redis.key(['users', 'ab']);
+expect(users).to.be.equal('paywell:users:ab');
+
+const vegetables = redis.key('users', 'likes', 'vegetables');
+expect(vegetables).to.be.equal('paywell:users:likes:vegetables');
+
+...
+
+```
+
 ## Testing
 * Clone this repository
 

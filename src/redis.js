@@ -141,9 +141,9 @@ exports.info = function (done) {
  * @since 0.1.0
  * @public
  */
-exports.key = function (key) {
+exports.key = function (...args) {
   //concatenate key is varargs
-  key = [].concat(key);
+  let key = [].concat(...args);
   key = [exports.defaults.prefix].concat(key);
 
   //join key using separator
