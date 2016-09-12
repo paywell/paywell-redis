@@ -3,7 +3,7 @@
 //dependencies
 var path = require('path');
 var expect = require('chai').expect;
-var redis = require(path.join(__dirname, '..', 'src', 'redis'));
+var redis = require(path.join(__dirname, '..'))();
 
 describe('redis', function () {
 
