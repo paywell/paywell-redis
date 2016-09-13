@@ -13,10 +13,17 @@
 
 
 //dependencies
+const path = require('path');
 const redis = require('redis');
 const _ = require('lodash');
 const uuid = require('uuid');
 const noop = function () {};
+
+
+//import and extend redis with hash utilities
+const hash = require(path.join(__dirname, 'hash'));
+hash.redis = exports;
+exports.hash = hash;
 
 
 //defaults settings
@@ -209,6 +216,8 @@ exports.reset = exports.quit = function () {
  * @public
  */
 exports.clear = function (pattern, done) {
+
+  //TODO clear hash search index
 
   //normalize arguments
   if (pattern && _.isFunction(pattern)) {
