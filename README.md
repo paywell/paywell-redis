@@ -153,6 +153,72 @@ redis.reset();
 
 ```
 
+### HASH
+
+#### `save(object:Object, [options:Object], done:Fuction)`
+Save given object as a [flat](https://github.com/hughsk/flat) redis hash.
+
+Options:
+- `index:Boolean` - whether to [index](https://github.com/tj/reds) the object or not for search. default to `true`.
+- `collection:String` - name of collection used in prefix hash keys. default to `hash`
+- `ignore: Array[String]` - Collection of `object fields` to ignore when indexing 
+
+```js
+const object = ...;
+redis.hash.save(object, function (error, _object) {
+    ...
+});
+
+const user = ...;
+redis.hash.save(user, {collection:'users'}, function (error, _object) {
+    ...
+});
+```
+
+#### `get(...keys,done:Function)`
+Get single or multiple saved object using their keys
+
+```js
+//get single
+redis.hash.get(<id>, function(error, object){
+   ...
+});
+
+//get multiple object
+redis.hash.get([<id>, <id>], function(error, objects){
+   ...
+});
+
+//get multiple object
+redis.hash.get(<id>, <id>, function(error, objects){
+   ...
+});
+```
+
+#### `search(options:String|Object, done:Function)`
+Search existing objects.
+
+Options:
+- `type:String` - type of [reds](https://github.com/tj/reds) search. default to `or`
+- `collection:String` - name of collection used in searching. default to `hash`
+- `q: String` - query string. default to ''
+
+```js
+//search default collection
+redis.hash.search(<search_query>, function (error, objects) {
+    ...
+});
+
+//search specific collection
+redis.hash.search({
+    q: objectx.username,
+    collection: 'users',
+    type:'or'
+  }, function (error, objects) {
+    ...
+});
+```
+
 ## Testing
 * Clone this repository
 

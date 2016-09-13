@@ -71,7 +71,7 @@ exports.client = function () {
  * @private
  */
 exports.key = function (...args) {
-  const _key = exports.redis.key(args);
+  const _key = exports.redis.key([].concat(...args));
   return _key;
 };
 
@@ -105,6 +105,9 @@ exports.indexKey = function (collection) {
 exports.save = exports.create = function (object, options, done) {
   //TODO run all operations atomically
 
+  //ensure object
+  object = _.merge({}, object);
+
   //normalize arguments
   if (arguments.length === 2) {
     done = options;
@@ -121,8 +124,8 @@ exports.save = exports.create = function (object, options, done) {
   //ensure _id is ignored on indexing
   options.ignore = _.uniq(['_id'].concat(options.ignore));
 
-
   //TODO validate key to ensure it start with required prefix
+
   //obtain key from the object to be saved
   //or generate one
   object._id = object._id || exports.key([options.collection, uuid.v1()]);
@@ -140,8 +143,6 @@ exports.save = exports.create = function (object, options, done) {
     exports.indexes[indexKey] =
       exports.indexes[indexKey] || exports.reds.createSearch(indexKey);
 
-    //TODO remove existing index before update
-    //TODO make use of traverse to allow deep indexing
 
     //index flat object
     _.forEach(flatObject, function (value, key) {
@@ -167,44 +168,26 @@ exports.save = exports.create = function (object, options, done) {
 /**
  * @function
  * @name get
- * @description get object from redis hash
- * @param  {String|[String]}   key    key used to store data
+ * @description get objects from redis
+ * @param  {String|[String]}   keys    a single or collection of existing keys
  * @param  {Function} done   a callback to invoke on success or failure
- * @return {Object}          persisted object with key added
+ * @return {Object|[Object]} single or collection of existing hash
  * @since 0.2.0
  * @public
  */
-exports.get = function (key, done) {
+exports.get = function (...keys) {
 
-  //ensure client
-  exports.client();
-
-  //obtain hash from redis
-  exports.client().hgetall(key, function afterFetch(error, object) {
-
-    //unflat hash
-    if (!error) {
-      object = unflat(object);
-    }
-
-    done(error, object);
-  });
-
-};
-
-
-/**
- * @function
- * @name hmget
- * @description get multiple objects from redis
- * @param  {[String]}   keys    collection of keys in redis
- * @param  {Function} done   a callback to invoke on success or failure
- * @since 0.2.0
- * @public
- */
-exports.hmgetall = exports.hmget = function (keys, done) {
   //normalize keys to array
-  keys = [].concat(keys);
+  keys = [].concat(...keys);
+
+  //compact and ensure unique keys
+  keys = _.uniq(_.compact(keys));
+
+  //obtain callback
+  const done = _.last(keys);
+
+  //obtain keys
+  keys = _.initial(keys);
 
   //initiate multi command client
   const _client = exports.client().multi();
@@ -219,9 +202,14 @@ exports.hmgetall = exports.hmget = function (keys, done) {
 
     //unflat objects
     if (!error) {
+
+      //unflatten objects
       objects = _.map(objects, function (object) {
         return unflat(object); //unflatten object from redis
       });
+
+      //ensure single or multi objects
+      objects = keys.length === 1 ? _.first(objects) : objects;
     }
 
     done(error, objects);
@@ -261,14 +249,18 @@ exports.search = function (options, done) {
   const search = exports.indexes[indexKey];
 
   //perform search if search index exists
-  if (search) {
+  if (search && !_.isEmpty(options.q)) {
     async.waterfall([
       function find(next) {
         //issue search query using reds
         search.query(options.q).type(options.type).end(next);
       },
       function onSearchEnd(keys, next) {
-        exports.hmget(keys, next); // get all objects from redis
+        exports.get(keys, next); // get all objects from redis
+      },
+      function normalizeResults(results, next) {
+        results = [].concat(results);
+        next(null, results);
       }
     ], function onFinish(error, results) {
       done(error, results);
