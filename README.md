@@ -155,7 +155,7 @@ redis.reset();
 
 ### HASH
 
-#### `save(object:Object, [options:Object], done:Fuction)`
+#### `save(object:Object,[options:Object],done:Fuction)`
 Save given object as a [flat](https://github.com/hughsk/flat) redis hash.
 
 Options:
@@ -195,7 +195,7 @@ redis.hash.get(<id>, <id>, function(error, objects){
 });
 ```
 
-#### `search(options:String|Object, done:Function)`
+#### `search(options:String|Object,done:Function)`
 Search existing objects.
 
 Options:
