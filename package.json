@@ -14,9 +14,15 @@
     "byteskode",
     "paywell",
     "redis",
+    "reds",
     "factory",
     "utilities",
-    "client"
+    "client",
+    "hash",
+    "create",
+    "find",
+    "get",
+    "search"
   ],
   "author": {
     "name": "lykmapipo",
