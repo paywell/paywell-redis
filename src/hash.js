@@ -15,11 +15,45 @@
 //dependencies
 const _ = require('lodash');
 const async = require('async');
+const traverse = require('traverse');
 const uuid = require('uuid');
 const reds = require('reds');
 const flat = require('flat').flatten;
 const unflat = require('flat').unflatten;
 
+
+/**
+ * @function
+ * @name parse
+ * @description traverse js object and try convert values to their respective
+ *              js type i.e numbers etc
+ * @param  {Object} object valid js plain object
+ * @return {Object}        object with all nodes converted to their respective
+ *                                js types
+ *
+ * @since 0.3.0
+ * @private
+ */
+exports.parse = function (object) {
+
+  //ensure object
+  object = _.merge({}, object);
+
+  //traverse object and apply parser
+  traverse(object).forEach(function (value) {
+
+    //parse number strings to js numbers
+    const isNumber = !isNaN(value);
+    if (isNumber) {
+      value = Number(value);
+      //update current field
+      this.update(value);
+    }
+
+  });
+
+  return object;
+};
 
 /**
  * @object
@@ -174,6 +208,8 @@ exports.save = exports.create = function (object, options, done) {
 
   //save the object and flush indexes
   exports.client().hmset(flatObject._id, flatObject, function afterSave(error) {
+    //parse object
+    object = exports.parse(object);
     done(error, object);
   });
 
@@ -220,7 +256,13 @@ exports.get = function (...keys) {
 
       //unflatten objects
       objects = _.map(objects, function (object) {
-        return unflat(object); //unflatten object from redis
+
+        //unflatten object from redis
+        object = unflat(object);
+        //parse object
+        object = exports.parse(object);
+
+        return object;
       });
 
       //ensure single or multi objects

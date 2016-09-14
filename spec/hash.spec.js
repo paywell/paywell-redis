@@ -28,7 +28,7 @@ describe('hash', function () {
     });
 
     let _id;
-    const object = faker.helpers.userCard();
+    const object = redis.hash.parse(faker.helpers.userCard());
 
     it('should be able to able to save object to redis', function (done) {
       redis.hash.save(object, function (error, _object) {
@@ -60,9 +60,11 @@ describe('hash', function () {
     });
 
     let _idx, _idy;
+    let objectx = redis.hash.parse(faker.helpers.userCard());
+    let objecty = redis.hash.parse(faker.helpers.userCard());
 
     before(function (done) {
-      redis.hash.save(faker.helpers.userCard(), function (error,
+      redis.hash.save(objectx, function (error,
         _object) {
         _idx = _object._id;
         done(error, _object);
@@ -70,7 +72,7 @@ describe('hash', function () {
     });
 
     before(function (done) {
-      redis.hash.save(faker.helpers.userCard(), function (error,
+      redis.hash.save(objecty, function (error,
         _object) {
         _idy = _object._id;
         done(error, _object);
@@ -80,6 +82,8 @@ describe('hash', function () {
     it('should be able to fetch single object', function (done) {
       redis.hash.get(_idx, function (error, _object) {
         expect(_object._id).to.be.equal(_idx);
+        delete _object._id;
+        expect(_object).to.be.eql(objectx);
         done(error, _object);
       });
     });
@@ -107,13 +111,15 @@ describe('hash', function () {
     });
 
     let _idx, _idy;
-    const object = faker.helpers.userCard();
-    const objectx = faker.helpers.userCard();
+    let objectx = faker.helpers.userCard();
+    let objecty = faker.helpers.userCard();
 
     before(function (done) {
-      redis.hash.save(object, function (error,
+      redis.hash.save(objectx, function (error,
         _object) {
         _idx = _object._id;
+        delete _object._id;
+        objectx = _object;
         done(error, _object);
       });
     });
@@ -122,18 +128,20 @@ describe('hash', function () {
       redis.hash.save(objectx, { collection: 'users' }, function (
         error, _object) {
         _idy = _object._id;
+        delete _object._id;
+        objecty = _object;
         done(error, _object);
       });
     });
 
     it('should be able to search saved objects', function (done) {
-      redis.hash.search(object.username, function (error, objects) {
+      redis.hash.search(objectx.username, function (error, objects) {
         expect(error).to.not.exist;
         expect(objects).to.have.have.length(1);
 
         const _object = objects[0];
         delete _object._id;
-        expect(_object).to.be.eql(object);
+        expect(_object).to.be.eql(objectx);
         done(error, objects);
       });
     });
@@ -148,7 +156,7 @@ describe('hash', function () {
 
         const _object = objects[0];
         delete _object._id;
-        expect(_object).to.be.eql(objectx);
+        expect(_object).to.be.eql(objecty);
         done(error, objects);
       });
     });
