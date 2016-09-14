@@ -78,6 +78,21 @@ exports.key = function (...args) {
 
 /**
  * @function
+ * @name multi
+ * @description create new instance of redis multi object
+ * @return {Object} redis client
+ * @since 0.2.0
+ * @private
+ */
+exports.multi = function () {
+  const client = exports.client();
+  const multi = client.multi();
+  return multi;
+};
+
+
+/**
+ * @function
  * @name indexKey
  * @description prepare collection index key
  * @param  {String} collection valid name of the collection
@@ -190,7 +205,7 @@ exports.get = function (...keys) {
   keys = _.initial(keys);
 
   //initiate multi command client
-  const _client = exports.client().multi();
+  const _client = exports.multi();
 
   //prepare multiple hgetall
   _.forEach(keys, function (key) {
