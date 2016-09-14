@@ -76,12 +76,34 @@ const client = redis.createClient([options]);
 
 ```
 
-### `pubsub():{publisher, subscriber}`
+### `pubsub():{publisher:Object, subscriber:Object}`
 Obtain existing or create new instances of publisher and subscriber redis clients
 
 ```js
 const redis = require('paywell-redis')();
 const { publisher, subscriber } = redis.pubsub();
+
+...
+
+```
+
+### `client():Object`
+Obtain existing or create new instance of redis client
+
+```js
+const redis = require('paywell-redis')();
+const client = redis.client();
+
+...
+
+```
+
+### `multi():Object`
+Create new instance of redis multi command object
+
+```js
+const redis = require('paywell-redis')();
+const client = redis.multi();
 
 ...
 

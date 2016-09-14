@@ -105,6 +105,7 @@ exports.pubsub = function () {
  * @function
  * @name init
  * @description initialize redis client and pubsub
+ * @return {Object} redis client
  * @since 0.1.0
  * @public
  */
@@ -121,6 +122,26 @@ exports.init = exports.client = function () {
   //return a normal redis client
   return exports._client;
 
+};
+
+
+/**
+ * @function
+ * @name multi
+ * @description initialize redis multi command object
+ * @return {Object} redis multi command object
+ * @since 0.3.0
+ * @see {@link https://github.com/NodeRedis/node_redis#clientmulticommands}
+ * @public
+ */
+exports.multi = function () {
+  //ensure clients
+  const client = exports.init();
+
+  //obtain client
+  const multi = client.multi();
+
+  return multi;
 };
 
 
@@ -247,7 +268,7 @@ exports.clear = function (pattern, done) {
       done(error);
     } else {
       //initiate multi to run all commands atomically
-      var _client = exports.client().multi();
+      var _client = exports.multi();
 
       //queue commands
       _.forEach(keys, function (key) {

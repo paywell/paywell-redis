@@ -90,6 +90,13 @@ describe('redis', function () {
 
   });
 
+  it('should be able to initialize multi object', function () {
+    const multi = redis.multi();
+    expect(multi).to.exist;
+    expect(multi.exec).to.exist;
+    expect(multi.exec).to.be.a.function;
+  });
+
   it('should be able to generate a key', function () {
     const key = redis.key();
     expect(key).to.exist;
