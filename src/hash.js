@@ -21,6 +21,7 @@ const reds = require('reds');
 const flat = require('flat').flatten;
 const unflat = require('flat').unflatten;
 
+
 /**
  * @function
  * @name serialize
@@ -38,6 +39,8 @@ exports.serialize = function (object) {
 
   //ensure object
   object = _.merge({}, object);
+
+  //TODO allow custom serializers
 
   //traverse object and apply serializers
   traverse(object).forEach(function (value) {
@@ -73,6 +76,8 @@ exports.deserialize = function (object) {
   //ensure object
   object = _.merge({}, object);
 
+  //TODO allow custom deserializer
+
   //traverse object and apply parser
   traverse(object).forEach(function (value) {
 
@@ -88,6 +93,7 @@ exports.deserialize = function (object) {
 
   return object;
 };
+
 
 /**
  * @object
