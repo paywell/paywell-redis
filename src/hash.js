@@ -192,7 +192,8 @@ exports.indexKey = function (collection) {
  * @public
  */
 exports.save = exports.create = function (object, options, done) {
-  //TODO run all operations atomically
+  //TODO create and index operations atomically
+  //TODO fork reds and allow to pass multi on its operations
 
   //ensure object
   object = _.merge({}, object);
@@ -341,7 +342,7 @@ exports.search = function (options, done) {
   //merge options
   options = _.merge({}, {
     type: 'or', //default search operator
-    collection: 'hash', //default collection
+    collection: 'hash', //default collection or namespace
     q: '' //search term
   }, options);
 
