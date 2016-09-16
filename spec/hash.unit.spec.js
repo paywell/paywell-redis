@@ -28,7 +28,7 @@ describe('hash', function () {
     });
 
     let _id;
-    const object = redis.hash.parse(faker.helpers.userCard());
+    const object = redis.hash.deserialize(faker.helpers.userCard());
 
     it('should be able to able to save object to redis', function (done) {
       redis.hash.save(object, function (error, _object) {
@@ -60,8 +60,8 @@ describe('hash', function () {
     });
 
     let _idx, _idy;
-    let objectx = redis.hash.parse(faker.helpers.userCard());
-    let objecty = redis.hash.parse(faker.helpers.userCard());
+    let objectx = redis.hash.deserialize(faker.helpers.userCard());
+    let objecty = redis.hash.deserialize(faker.helpers.userCard());
 
     before(function (done) {
       redis.hash.save(objectx, function (error,
