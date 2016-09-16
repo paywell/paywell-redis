@@ -241,6 +241,10 @@ redis.hash.search({
 });
 ```
 
+## References
+- [store-javascript-objects-in-redis-with-node-js-the-right-way](https://medium.com/@stockholmux/store-javascript-objects-in-redis-with-node-js-the-right-way-1e2e89dbbf64#.eb1040111)
+- [reds-internals-searching-and-better-searching-with-node-js-and-redis](https://medium.com/@stockholmux/reds-internals-searching-and-better-searching-with-node-js-and-redis-57da99077e83#.5nhdaxnl4)
+
 ## Testing
 * Clone this repository
 
