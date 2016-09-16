@@ -1,9 +1,9 @@
 'use strict';
 
 //dependencies
-var path = require('path');
-var expect = require('chai').expect;
-var redis = require(path.join(__dirname, '..'))();
+const path = require('path');
+const expect = require('chai').expect;
+const redis = require(path.join(__dirname, '..'))();
 
 describe('redis', function () {
 
@@ -22,12 +22,51 @@ describe('redis', function () {
     expect(redis.init).to.exist;
     expect(redis.init).to.be.a.function;
 
+    expect(redis.client).to.exist;
+    expect(redis.client).to.be.a.function;
+
     expect(redis.pubsub).to.exist;
     expect(redis.pubsub).to.be.a.function;
 
     expect(redis._client).to.not.exist;
     expect(redis.publisher).to.not.exist;
     expect(redis.subscriber).to.not.exist;
+
+  });
+
+  describe('init & client & pubsub client', function () {
+    before(function () {
+      redis.reset();
+    });
+
+    it('should return same redis instances once initialized', function () {
+      expect(redis.client()._id)
+        .to.be.equal(redis.client()._id);
+
+      expect(redis.pubsub().publisher._id)
+        .to.be.equal(redis.pubsub().publisher._id);
+
+      expect(redis.pubsub().subscriber._id)
+        .to.be.equal(redis.pubsub().subscriber._id);
+    });
+
+    it('should return same redis instances once initialized', function () {
+      //require redis
+      const rediz = require(path.join(__dirname, '..'))();
+
+      expect(rediz.client()._id)
+        .to.be.equal(redis.client()._id);
+
+      expect(rediz.pubsub().publisher._id)
+        .to.be.equal(redis.pubsub().publisher._id);
+
+      expect(rediz.pubsub().subscriber._id)
+        .to.be.equal(redis.pubsub().subscriber._id);
+    });
+
+    after(function () {
+      redis.reset();
+    });
 
   });
 

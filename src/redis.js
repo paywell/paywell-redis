@@ -20,6 +20,11 @@ const uuid = require('uuid');
 const noop = function () {};
 
 
+//reference to all created redis clients
+//mainly used for safe shutdown and resource cleanups
+exports._clients = [];
+
+
 //import and extend redis with hash utilities
 const hash = require(path.join(__dirname, 'hash'));
 hash.redis = exports;
@@ -56,48 +61,30 @@ exports.defaults = _.merge({}, defaults);
  * @public
  */
 exports.createClient = function (options) {
-
+  //merge options
   options = _.merge({}, exports.defaults, options);
 
+  //instantiate a redis client
   const socket = options.redis.socket;
   const port = !socket ? (options.redis.port || 6379) : null;
   const host = !socket ? (options.redis.host || '127.0.0.1') : null;
   const client =
     redis.createClient(socket || port, host, options.redis.options);
 
+  //authenticate
   if (options.redis.auth) {
     client.auth(options.redis.auth);
   }
 
+  //select database
   if (options.redis.db) {
     client.select(options.redis.db);
   }
 
+  //remember created client(s) for later safe shutdown
+  exports._clients = _.compact([].concat(exports._clients).concat(client));
+
   return client;
-};
-
-
-/**
- * @function
- * @name pubsub
- * @description instantiate redis pub-sub clients pair if not exists
- * @since 0.1.0
- * @public
- */
-exports.pubsub = function () {
-
-  //create publisher if not exists
-  if (!exports.publisher) {
-    exports.publisher = exports.createClient();
-  }
-
-  //create subscriber if not exist
-  if (!exports.subscriber) {
-    exports.subscriber = exports.createClient();
-  }
-
-  //exports pub/sub clients
-  return { publisher: exports.publisher, subscriber: exports.subscriber };
 };
 
 
@@ -114,6 +101,7 @@ exports.init = exports.client = function () {
   //initialize normal client
   if (!exports._client) {
     exports._client = exports.createClient();
+    exports._client._id = Date.now();
   }
 
   //initialize publisher and subscriber clients
@@ -122,6 +110,32 @@ exports.init = exports.client = function () {
   //return a normal redis client
   return exports._client;
 
+};
+
+
+/**
+ * @function
+ * @name pubsub
+ * @description instantiate redis pub-sub clients pair if not exists
+ * @since 0.1.0
+ * @public
+ */
+exports.pubsub = function () {
+
+  //create publisher if not exists
+  if (!exports.publisher) {
+    exports.publisher = exports.createClient();
+    exports.publisher._id = Date.now();
+  }
+
+  //create subscriber if not exist
+  if (!exports.subscriber) {
+    exports.subscriber = exports.createClient();
+    exports.subscriber._id = Date.now();
+  }
+
+  //exports pub/sub clients
+  return { publisher: exports.publisher, subscriber: exports.subscriber };
 };
 
 
@@ -201,21 +215,19 @@ exports.key = function (...args) {
  * @public
  */
 exports.reset = exports.quit = function () {
+
   //clear subscriptions and listeners
   if (exports.subscriber) {
     exports.subscriber.unsubscribe();
     exports.subscriber.removeAllListeners();
   }
 
-  //quit clients
-  exports._client =
-    exports._client ? exports._client.quit() : null;
-
-  exports.publisher =
-    exports.publisher ? exports.publisher.quit() : null;
-
-  exports.subscriber =
-    exports.subscriber ? exports.subscriber.quit() : null;
+  //quit all clients
+  _.forEach(exports._clients, function (_client) {
+    //TODO do they shutdown immediately
+    //TODO check kue how they handle this
+    _client.quit();
+  });
 
   //reset clients
   exports._client = null;
@@ -224,6 +236,10 @@ exports.reset = exports.quit = function () {
 
   //reset settings
   exports.defaults = _.merge({}, defaults);
+
+  //reset clients
+  exports._clients = [];
+
 };
 
 
