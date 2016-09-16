@@ -176,13 +176,14 @@ redis.reset();
 ```
 
 ### HASH
+Store object into redis [hash datatype](http://redis.io/commands/HSET). Before saving the whole of object is [flatten'ed](https://github.com/hughsk/flat). 
 
 #### `save(object:Object,[options:Object],done:Fuction)`
 Save given object as a [flat](https://github.com/hughsk/flat) redis hash.
 
 Options:
 - `index:Boolean` - whether to [index](https://github.com/tj/reds) the object or not for search. default to `true`.
-- `collection:String` - name of collection used in prefix hash keys. default to `hash`
+- `collection:String` - name of collection or namespace used in prefix hash keys. default to `hash`
 - `ignore: Array[String]` - Collection of `object fields` to ignore when indexing 
 
 ```js
