@@ -21,6 +21,40 @@ const reds = require('reds');
 const flat = require('flat').flatten;
 const unflat = require('flat').unflatten;
 
+/**
+ * @function
+ * @name serialize
+ * @description traverse js object and try convert values to appropriate redis
+ *              redis storage type
+ *              e.g dates will be converted to timestamp
+ * @param  {Object} object valid js plain object
+ * @return {Object}        object with all nodes converted to their respective
+ *                         possible redis storage types
+ *
+ * @since 0.3.0
+ * @private
+ */
+exports.serialize = function (object) {
+
+  //ensure object
+  object = _.merge({}, object);
+
+  //traverse object and apply serializers
+  traverse(object).forEach(function (value) {
+
+    //parse convert dates to timestamps
+    const isDate = _.isDate(value);
+    if (isDate) {
+      value = value.getTime();
+      //update current field
+      this.update(value);
+    }
+
+  });
+
+  return object;
+};
+
 
 /**
  * @function
@@ -157,6 +191,9 @@ exports.save = exports.create = function (object, options, done) {
   //ensure object
   object = _.merge({}, object);
 
+  //ensure js types
+  object = exports.deserialize(object);
+
   //normalize arguments
   if (arguments.length === 2) {
     done = options;
@@ -180,7 +217,10 @@ exports.save = exports.create = function (object, options, done) {
   object._id = object._id || exports.key([options.collection, uuid.v1()]);
 
   //flat the object
-  const flatObject = flat(object);
+  let flatObject = flat(object);
+
+  //serialize flattened object
+  flatObject = exports.serialize(flatObject);
 
   //ensure client
   exports.client();
@@ -208,8 +248,6 @@ exports.save = exports.create = function (object, options, done) {
 
   //save the object and flush indexes
   exports.client().hmset(flatObject._id, flatObject, function afterSave(error) {
-    //parse object
-    object = exports.deserialize(object);
     done(error, object);
   });
 

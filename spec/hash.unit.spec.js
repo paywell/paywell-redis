@@ -21,6 +21,15 @@ describe('hash', function () {
     redis.init();
   });
 
+  describe('serialize & deserialize', function () {
+    it('should be able to serialize dates to timestamp', function () {
+      const today = new Date();
+      const object = { today: today };
+      const serialized = redis.hash.serialize(object);
+      expect(serialized.today).to.be.equal(today.getTime());
+    });
+  });
+
 
   describe('save', function () {
     before(function () {
