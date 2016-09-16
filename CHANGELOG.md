@@ -4,3 +4,4 @@
 - add shutdown hook to `quit` or `reset` on process shutdown/exit
 - add reference to all created clients
 - shutdown all clients on `quit` or `reset` 
+- rename `hash.parse` to `hash.deserialize`
