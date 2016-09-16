@@ -176,7 +176,7 @@ redis.reset();
 ```
 
 ### HASH
-Store object into redis [hash datatype](http://redis.io/commands/HSET). Before saving the whole of object is [flatten'ed](https://github.com/hughsk/flat). 
+Store object into redis [hash datatype](http://redis.io/commands/HSET). Before saving the whole of object is [flatten'ed](https://github.com/hughsk/flat) and serialized. i.e all `dates` will be converted to `timestamps` etc. 
 
 #### `save(object:Object,[options:Object],done:Fuction)`
 Save given object as a [flat](https://github.com/hughsk/flat) redis hash.
